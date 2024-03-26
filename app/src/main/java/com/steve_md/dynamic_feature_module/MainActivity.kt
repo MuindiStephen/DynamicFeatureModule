@@ -8,10 +8,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.BuildConfig
+import com.google.android.play.core.splitinstall.SplitInstallException
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
+import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.steve_md.dynamic_feature_module.databinding.ActivityMainBinding
 
@@ -21,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private var mySessionId: Int? = null
     private val progressDialog = ProgressDialog(this)
+    private val callback: DynamicDeliveryCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,9 +122,42 @@ class MainActivity : AppCompatActivity() {
             }
             .addOnFailureListener { exception ->
                 Log.d(this@MainActivity.toString(), exception.message.toString())
+                handleInstallFailure((exception as SplitInstallException).errorCode)
             }
 
     }
 
+    private fun handleInstallFailure(errorCode: Int) {
 
+        when (errorCode) {
+            SplitInstallErrorCode.NETWORK_ERROR -> {
+                callback?.onFailed("No internet found")
+            }
+
+            SplitInstallErrorCode.MODULE_UNAVAILABLE -> {
+                callback?.onFailed("Module unavailable")
+            }
+
+            SplitInstallErrorCode.ACTIVE_SESSIONS_LIMIT_EXCEEDED -> {
+                callback?.onFailed("Active session limit exceeded")
+            }
+
+            SplitInstallErrorCode.INSUFFICIENT_STORAGE -> {
+                callback?.onFailed("Insufficient storage")
+            }
+
+            SplitInstallErrorCode.PLAY_STORE_NOT_FOUND -> {
+                callback?.onFailed("Google Play Store Not Found!")
+            }
+
+            else -> {
+                callback?.onFailed("Something went wrong! Try again later")
+            }
+        }
+    }
+
+
+}
+interface DynamicDeliveryCallback {
+    fun onFailed(errorMessage: String)
 }
