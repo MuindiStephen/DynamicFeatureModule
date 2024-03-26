@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "Dynamic-Feature-Module"
 include ':app'
 include ':dynamic-feature-test'
+include ':oninstall'

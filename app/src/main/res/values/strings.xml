@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Dynamic-Feature-Module</string>
     <string name="title_dynamic_feature_test">DynamicModule</string>
+    <string name="title_oninstall">oninstall</string>
 </resources>

@@ -30,7 +30,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    dynamicFeatures = [':dynamic-feature-test']
+
+    buildFeatures{
+        viewBinding true
+    }
+    dynamicFeatures = [':dynamic-feature-test', ':oninstall']
 }
 
 dependencies {

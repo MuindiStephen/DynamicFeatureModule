@@ -1,31 +1,46 @@
 package com.steve_md.dynamic_feature_module
 
+import android.app.ProgressDialog
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewbinding.BuildConfig
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
+import com.steve_md.dynamic_feature_module.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
 
-    private val mySessionId:Int? = null
+    private var mySessionId: Int? = null
+    private val progressDialog = ProgressDialog(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        downloadDynamicModule()
+        binding.buttonDownloadOnDemandModule.setOnClickListener {
+            downloadDynamicModule()
+        }
+        binding.buttonOpenOnInstallDynamicFeature.setOnClickListener {
+            val intent = Intent()
+            intent.setClassName("com.steve_md.dynamic_feature_module","com.steve_md.oninstall.MainActivity")
+            startActivity(intent)
+        }
+
     }
 
     private fun downloadDynamicModule() {
-        val splitInstallManager:SplitInstallManager = SplitInstallManagerFactory.create(this)
-        val splitInstallRequest:SplitInstallRequest = SplitInstallRequest
+        val splitInstallManager: SplitInstallManager = SplitInstallManagerFactory.create(this)
+        val splitInstallRequest: SplitInstallRequest = SplitInstallRequest
             .newBuilder()
             .addModule("dynamic-feature-test")
             .build()
@@ -34,43 +49,76 @@ class MainActivity : AppCompatActivity() {
             SplitInstallStateUpdatedListener { splitInstallSessionState ->
                 if (splitInstallSessionState.sessionId() == mySessionId) {
                     when (splitInstallSessionState.status()) {
-                        SplitInstallSessionStatus.INSTALLED -> {
-                            Log.d(TAG, "Dynamic Module downloaded")
+                        SplitInstallSessionStatus.INSTALLED -> run {
+                            Log.d(TAG, "Dynamic Module installed")
                             Toast.makeText(
                                 this@MainActivity,
                                 "Dynamic Module downloaded",
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_LONG
                             ).show()
+                            Log.i(this@MainActivity.toString(), "===Installed===>{}")
+
+                            val intent = Intent()
+                            intent.setClassName("com.steve_md.dynamic_feature_module","com.steve_md.dynamic_feature_test.DynamicTestMainActivity")
+                            startActivity(intent)
                         }
-                        SplitInstallSessionStatus.CANCELED -> {
-                            //Log.d("Dynamic module concelled", "")
+
+                        SplitInstallSessionStatus.CANCELED -> run {
+                            Log.e(this@MainActivity.toString(), "===Cancelled===>")
                         }
-                        SplitInstallSessionStatus.CANCELING -> {
-                            TODO()
+
+                        SplitInstallSessionStatus.CANCELING -> run {
+                            progressDialog.setMessage("Cancelling")
+                            progressDialog.show()
                         }
-                        SplitInstallSessionStatus.DOWNLOADED -> {
-                            TODO()
+
+                        SplitInstallSessionStatus.DOWNLOADED -> run {
+                            progressDialog.setMessage("Downloaded")
+                            progressDialog.show()
                         }
-                        SplitInstallSessionStatus.DOWNLOADING -> {
-                            TODO()
+
+                        SplitInstallSessionStatus.DOWNLOADING -> run {
+                            progressDialog.setMessage("Downloading...")
+                            progressDialog.show()
                         }
-                        SplitInstallSessionStatus.FAILED -> {
-                            TODO()
+
+                        SplitInstallSessionStatus.FAILED -> run {
+                            Log.e(this@MainActivity.toString(), "===Failed===>")
                         }
-                        SplitInstallSessionStatus.INSTALLING -> {
-                            TODO()
+
+                        SplitInstallSessionStatus.INSTALLING -> run {
+                            progressDialog.setMessage("Installing")
+                            progressDialog.show()
                         }
-                        SplitInstallSessionStatus.PENDING -> {
-                            TODO()
+
+                        SplitInstallSessionStatus.PENDING -> run {
+                            Log.e(this@MainActivity.toString(), "===Pending===>")
                         }
-                        SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
-                            TODO()
+
+                        SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> run {
+                            Log.e(this@MainActivity.toString(), "===>Requires user information")
                         }
-                        SplitInstallSessionStatus.UNKNOWN -> {
-                            TODO()
+
+                        SplitInstallSessionStatus.UNKNOWN -> run {
+                            Log.e(this@MainActivity.toString(), "===Unknown===>")
                         }
                     }
                 }
+
+
+            }
+        /**
+        @splitInstallManager
+        @splitInstallRequest
+        @listener
+         */
+        splitInstallManager.registerListener(listener)
+        splitInstallManager.startInstall(splitInstallRequest)
+            .addOnSuccessListener { sessionId ->
+                mySessionId = sessionId
+            }
+            .addOnFailureListener { exception ->
+                Log.d(this@MainActivity.toString(), exception.message.toString())
             }
 
     }

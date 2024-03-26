@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Dynamic Feature Test"
+        android:text="Dynamic Feature Delivery"
         android:fontFamily="sans-serif-condensed-medium"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,26 +19,26 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonDownloadModule"
+        android:id="@+id/buttonDownloadOnDemandModule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="116dp"
-        android:text="Download Dynamic Feature"
+        android:text="ondemand dynamic feature"
         app:layout_constraintEnd_toEndOf="@+id/textView"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
-        android:id="@+id/buttonOpenDynamicFeature"
+        android:id="@+id/buttonOpenOnInstallDynamicFeature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="160dp"
-        android:text="Open Dynamic Feature"
-        app:layout_constraintEnd_toEndOf="@+id/buttonDownloadModule"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="@+id/buttonDownloadModule"
-        app:layout_constraintTop_toBottomOf="@+id/buttonDownloadModule" />
+        android:text="Oninstall dynamic feature"
+        app:layout_constraintEnd_toEndOf="@+id/buttonDownloadOnDemandModule"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/buttonDownloadOnDemandModule"
+        app:layout_constraintTop_toBottomOf="@+id/buttonDownloadOnDemandModule" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

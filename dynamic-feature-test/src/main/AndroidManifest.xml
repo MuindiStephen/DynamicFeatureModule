@@ -5,7 +5,7 @@
     <dist:module
         dist:instant="false"
         dist:title="@string/title_dynamic_feature_test">
-        <dist:fusing dist:include="true" />
+        <dist:fusing dist:include="true" /> <!--fusing ensures that this module be available also in devices with android version4.4(api level 20)-->
     </dist:module>
 
     <application>
